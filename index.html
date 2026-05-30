@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VIBE — Social Media</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="auth-card" id="authCard">
+    <div class="auth-logo">VIBE</div>
+    <p class="auth-tagline">Share your world. Connect your vibe.</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Join Now</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="auth-form" id="formLogin">
+      <div class="input-group">
+        <span class="input-icon">@</span>
+        <input type="text" id="loginUsername" placeholder="Username" autocomplete="off"/>
+      </div>
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="loginPassword" placeholder="Password"/>
+      </div>
+      <button class="btn-auth" onclick="handleLogin()">Sign In →</button>
+      <p class="auth-hint">Try: <strong>demo</strong> / <strong>demo123</strong></p>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="auth-form hidden" id="formRegister">
+      <div class="input-group">
+        <span class="input-icon">✦</span>
+        <input type="text" id="regName" placeholder="Full Name"/>
+      </div>
+      <div class="input-group">
+        <span class="input-icon">@</span>
+        <input type="text" id="regUsername" placeholder="Username"/>
+      </div>
+      <div class="input-group">
+        <span class="input-icon">💬</span>
+        <input type="text" id="regBio" placeholder="Short bio (optional)"/>
+      </div>
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="regPassword" placeholder="Password"/>
+      </div>
+      <button class="btn-auth" onclick="handleRegister()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app hidden" id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">VIBE</div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="showView('feed')" id="navFeed">
+        <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+      </button>
+      <button class="nav-item" onclick="showView('explore')" id="navExplore">
+        <span class="nav-icon">🔍</span><span class="nav-label">Explore</span>
+      </button>
+      <button class="nav-item" onclick="showView('notifications')" id="navNotif">
+        <span class="nav-icon">🔔</span><span class="nav-label">Notifications</span>
+        <span class="notif-badge" id="notifBadge">3</span>
+      </button>
+      <button class="nav-item" onclick="showView('profile')" id="navProfile">
+        <span class="nav-icon">👤</span><span class="nav-label">Profile</span>
+      </button>
+    </nav>
+    <button class="compose-btn" onclick="openCompose()">+ New Post</button>
+    <div class="sidebar-user" id="sidebarUser" onclick="showView('profile')">
+      <div class="user-avatar-sm" id="sidebarAvatar"></div>
+      <div class="user-meta">
+        <div class="user-meta-name" id="sidebarName"></div>
+        <div class="user-meta-handle" id="sidebarHandle"></div>
+      </div>
+      <button class="logout-btn" onclick="logout(event)" title="Logout">↩</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- FEED VIEW -->
+    <div class="view" id="viewFeed">
+      <div class="view-header">
+        <h1>Home</h1>
+        <div class="feed-tabs">
+          <button class="feed-tab active" onclick="setFeedTab('for-you',this)">For You</button>
+          <button class="feed-tab" onclick="setFeedTab('following',this)">Following</button>
+        </div>
+      </div>
+      <div class="compose-inline" onclick="openCompose()">
+        <div class="user-avatar-sm" id="inlineAvatar"></div>
+        <div class="compose-placeholder">What's on your mind?</div>
+        <button class="btn-post-inline">Post</button>
+      </div>
+      <div class="posts-feed" id="postsFeed"></div>
+    </div>
+
+    <!-- EXPLORE VIEW -->
+    <div class="view hidden" id="viewExplore">
+      <div class="view-header">
+        <h1>Explore</h1>
+        <div class="search-bar">
+          <span>🔍</span>
+          <input type="text" placeholder="Search people, posts..." id="searchInput" oninput="handleSearch()"/>
+        </div>
+      </div>
+      <div id="exploreContent"></div>
+    </div>
+
+    <!-- NOTIFICATIONS VIEW -->
+    <div class="view hidden" id="viewNotifications">
+      <div class="view-header"><h1>Notifications</h1></div>
+      <div class="notifs-list" id="notifsList"></div>
+    </div>
+
+    <!-- PROFILE VIEW -->
+    <div class="view hidden" id="viewProfile">
+      <div class="profile-header" id="profileHeader"></div>
+      <div class="profile-tabs">
+        <button class="profile-tab active" onclick="setProfileTab('posts',this)">Posts</button>
+        <button class="profile-tab" onclick="setProfileTab('likes',this)">Liked</button>
+      </div>
+      <div class="posts-feed" id="profilePosts"></div>
+    </div>
+
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="right-panel">
+    <div class="rp-section">
+      <h3>Who to Follow</h3>
+      <div id="suggestedUsers"></div>
+    </div>
+    <div class="rp-section">
+      <h3>Trending Tags</h3>
+      <div class="tags-list" id="trendingTags"></div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- COMPOSE MODAL -->
+<div class="overlay" id="composeOverlay" onclick="closeCompose()"></div>
+<div class="compose-modal" id="composeModal">
+  <div class="compose-modal-header">
+    <h3>Create Post</h3>
+    <button class="icon-btn" onclick="closeCompose()">✕</button>
+  </div>
+  <div class="compose-body">
+    <div class="user-avatar-sm" id="composeAvatar"></div>
+    <div class="compose-right">
+      <textarea id="postText" placeholder="What's happening?" maxlength="280"></textarea>
+      <div class="compose-meta">
+        <div class="char-count" id="charCount">280</div>
+        <div class="compose-emojis">
+          <button onclick="addEmoji('🔥')">🔥</button>
+          <button onclick="addEmoji('💯')">💯</button>
+          <button onclick="addEmoji('✨')">✨</button>
+          <button onclick="addEmoji('😂')">😂</button>
+          <button onclick="addEmoji('❤️')">❤️</button>
+        </div>
+        <button class="btn-submit-post" onclick="submitPost()">Post</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POST DETAIL MODAL -->
+<div class="overlay" id="postOverlay" onclick="closePost()"></div>
+<div class="post-modal" id="postModal">
+  <div class="compose-modal-header">
+    <h3>Post</h3>
+    <button class="icon-btn" onclick="closePost()">✕</button>
+  </div>
+  <div id="postDetail"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
